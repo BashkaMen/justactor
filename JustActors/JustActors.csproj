@@ -2,6 +2,15 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>JustActors</Title>
+        <Authors>BashkaMen</Authors>
+        <Description>Actor model implementation</Description>
+        <PackageProjectUrl>https://gitlab.com/BashkaMen/justactor</PackageProjectUrl>
+        <PackageIconUrl>https://gitlab.com/BashkaMen/justactor/-/raw/master/Assets/nuget-logo.png</PackageIconUrl>
+        <RepositoryUrl>https://gitlab.com/BashkaMen/justactor</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>actor</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
