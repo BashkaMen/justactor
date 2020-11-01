@@ -11,6 +11,14 @@
  **BeeApiary** система виртуальных акторов, из нее можно запросить Bee по id, если его нет - он будет создан
  
  
+ **Features**
+
+ - [x] Swarm of bee
+ - [x] Retry
+ - [x] Virtual actors
+ - [ ] Store\Restore state from external storage
+ - [ ] Bee life time (auto die)
+ - [ ] Microsoft DI support 
  
  Для того чтоб создать своего актора нужно реализовать **AbstractBee<T>** где **T** тип сообщений для актора
  
