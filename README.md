@@ -10,6 +10,9 @@
  
  **BeeApiary** система виртуальных акторов, из нее можно запросить Bee по id, если его нет - он будет создан
  
+ **Installation**
+ - Install-Package JustActors
+ 
  
  **Features**
 
