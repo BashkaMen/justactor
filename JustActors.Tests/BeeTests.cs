@@ -6,13 +6,27 @@ namespace JustActors.Tests
 {
     public class BeeTests
     {
+        private readonly LoggerBee _logger;
         private readonly IncrementBee _incrementor;
         private readonly SummatorBee _summator;
 
         public BeeTests()
         {
+            _logger = new LoggerBee();
             _incrementor = new IncrementBee();
             _summator = new SummatorBee();
+        }
+
+        [Fact]
+        public void Use_Logger()
+        {
+            _logger.Post(new LogMessage("log message")); // manual
+            _logger.LogMessage("log with helper"); // helper
+
+            
+            _logger.Post(new FlushMessage()); // manual
+            _logger.Flush(); // helper
+            
         }
 
 
