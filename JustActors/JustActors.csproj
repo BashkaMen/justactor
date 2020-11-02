@@ -11,6 +11,7 @@
         <RepositoryUrl>https://gitlab.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>actor</PackageTags>
+        <PackageVersion>1.0.1</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
