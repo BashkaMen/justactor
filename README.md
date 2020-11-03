@@ -15,13 +15,13 @@
  
  
  **Features**
-
+ - [x] Receive reply from bee
+ - [x] Retry on errors
  - [x] Swarm of bee
- - [x] Retry
  - [x] Virtual actors
+ - [ ] Microsoft DI support 
  - [ ] Store\Restore state from external storage
  - [ ] Bee life time (auto die)
- - [ ] Microsoft DI support 
  
  Для того чтоб создать своего актора нужно реализовать **AbstractBee<T>** где **T** тип сообщений для актора
  
