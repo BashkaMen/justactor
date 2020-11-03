@@ -7,7 +7,7 @@
         <Authors>BashkaMen</Authors>
         <Description>Actor model implementation</Description>
         <PackageProjectUrl>https://gitlab.com/BashkaMen/justactor</PackageProjectUrl>
-        <PackageIconUrl>https://gitlab.com/BashkaMen/justactor/-/raw/master/Assets/nuget-logo.png</PackageIconUrl>
+        <PackageIconUrl>https://gitlab.com/BashkaMen/justactor/-/raw/master/Assets/logo.png</PackageIconUrl>
         <RepositoryUrl>https://gitlab.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>actor</PackageTags>
