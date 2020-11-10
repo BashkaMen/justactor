@@ -36,9 +36,9 @@ namespace JustActors.Tests.Actors
             return Task.CompletedTask;
         }
 
-        protected override Task HandleError(BeeMessage<SummatorMessage> msg, Exception ex)
+        protected override Task<HandleResult> HandleError(BeeMessage<SummatorMessage> msg, Exception ex)
         {
-            throw new NotImplementedException();
+            return HandleResult.OkTask();
         }
     }
 }

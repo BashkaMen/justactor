@@ -23,4 +23,36 @@ namespace JustActors
             Attemp++;
         }
     }
+
+    
+    public class HandleResult
+    {
+        public static HandleResult Ok() => new OkHandleResult();
+        public static Task<HandleResult> OkTask() => Task.FromResult(Ok());
+        
+        public static HandleResult Retry() => new NeedRetry();
+        public static Task<HandleResult> RetryTask() => Task.FromResult(Retry());
+        
+        
+        public static HandleResult Retry(TimeSpan delay) => new NeedRetryWithDelay(delay);
+        public static Task<HandleResult> RetryTask(TimeSpan delay) => Task.FromResult(Retry(delay));
+        
+        protected HandleResult(){}
+    }
+    
+    
+    internal class OkHandleResult : HandleResult {}
+    internal class NeedRetry : HandleResult {}
+
+    internal class NeedRetryWithDelay : HandleResult
+    {
+        public TimeSpan Delay { get; }
+
+        public NeedRetryWithDelay(TimeSpan delay)
+        {
+            Delay = delay;
+        }
+    }
+
+    
 }

@@ -45,13 +45,9 @@ namespace JustActors.Tests.Actors
             }
         }
 
-        protected override Task HandleError(BeeMessage<ILoggerMessage> msg, Exception ex)
+        protected override Task<HandleResult> HandleError(BeeMessage<ILoggerMessage> msg, Exception ex)
         {
-            if (msg.Attemp > 3) return Task.CompletedTask;
-
-            Post(msg.Message); // retry
-
-            return Task.CompletedTask;
+            return msg.Attemp > 3 ? HandleResult.OkTask() : HandleResult.RetryTask();
         }
     }
 }

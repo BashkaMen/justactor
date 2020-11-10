@@ -27,7 +27,6 @@ namespace JustActors.Tests
             
             _logger.Post(new FlushMessage()); // manual
             _logger.Flush(); // helper
-            
         }
 
 

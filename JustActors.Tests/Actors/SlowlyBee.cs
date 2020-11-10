@@ -25,9 +25,9 @@ namespace JustActors.Tests.Actors
             msg.Reply(_random.Next(100, 500));
         }
 
-        protected override Task HandleError(BeeMessage<ReplyChannel<int>> msg, Exception ex)
+        protected override Task<HandleResult> HandleError(BeeMessage<ReplyChannel<int>> msg, Exception ex)
         {
-            throw new NotImplementedException();
+            return HandleResult.OkTask();
         }
     }
 

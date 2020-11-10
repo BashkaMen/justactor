@@ -16,11 +16,11 @@ namespace JustActors.Tests.Actors
             return Task.CompletedTask;
         }
 
-        protected override Task HandleError(BeeMessage<Unit> msg, Exception ex)
+        protected override Task<HandleResult> HandleError(BeeMessage<Unit> msg, Exception ex)
         {
             Console.WriteLine(ex);
             
-            return Task.CompletedTask;
+            return HandleResult.OkTask();
         }
     }
 }
