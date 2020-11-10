@@ -1,4 +1,6 @@
-![Nuget](https://img.shields.io/nuget/v/JustActors)
+![](https://badgen.net/github/last-commit/bashkamen/justactor)
+![](https://badgen.net/nuget/v/justactors)
+![](https://badgen.net/github/stars/bashkamen/justactor)
 
 **Терминология**
 
