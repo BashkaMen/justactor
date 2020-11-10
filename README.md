@@ -1,6 +1,5 @@
-![](https://badgen.net/github/last-commit/bashkamen/justactor)
-![](https://badgen.net/nuget/v/justactors)
-![](https://badgen.net/github/stars/bashkamen/justactor)
+![GitHub last commit](https://img.shields.io/github/last-commit/BashkaMen/justactor)
+![Nuget](https://img.shields.io/nuget/v/justactors)
 
 **Терминология**
 
