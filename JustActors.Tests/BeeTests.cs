@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using JustActors.Tests.Actors;
 using Xunit;
 
@@ -50,6 +51,14 @@ namespace JustActors.Tests
             var sum = await _summator.Sum(5, 5);
 
             Assert.Equal(10, sum);
+        }
+
+        [Fact]
+        public async Task Million_Actors()
+        {
+            var actors = Enumerable.Range(0, 1_000_000).Select(s => new SummatorBee()).ToArray();
+
+            await Task.Delay(10_000);
         }
     }
 }
