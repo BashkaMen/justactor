@@ -1,3 +1,5 @@
+![Nuget](https://img.shields.io/nuget/v/JustActors)
+
 **Терминология**
 
  - **Bee** <--> **Actor**
