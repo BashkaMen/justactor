@@ -8,7 +8,7 @@
         <Description>Actor model implementation</Description>
         <PackageProjectUrl>https://gitlab.com/BashkaMen/justactor</PackageProjectUrl>
         <PackageIconUrl>https://raw.githubusercontent.com/BashkaMen/justactor/master/Assets/logo.png</PackageIconUrl>
-        <RepositoryUrl>https://gitlab.com/BashkaMen/justactor</RepositoryUrl>
+        <RepositoryUrl>https://github.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>actor</PackageTags>
         <PackageVersion>1.1.0</PackageVersion>
