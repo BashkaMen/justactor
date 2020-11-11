@@ -1,5 +1,6 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/BashkaMen/justactor)
 ![Nuget](https://img.shields.io/nuget/v/justactors)
+![Run tests](https://github.com/BashkaMen/justactor/workflows/Run%20tests/badge.svg)
 
 **Терминология**
 
