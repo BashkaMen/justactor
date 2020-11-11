@@ -67,4 +67,4 @@
 
 
 Больше примеров можно посмотреть [здесь](https://github.com/BashkaMen/justactor/tree/master/JustActors.Tests/Actors)
-и примеры использования [здесь](https://github.com/BashkaMen/justactor/tree/master/JustActors.Tests/BeeTests.cs")
+и примеры использования [здесь](https://github.com/BashkaMen/justactor/blob/master/JustActors.Tests/BeeTests.cs)
