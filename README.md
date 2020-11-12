@@ -23,7 +23,7 @@
  - [x] Retry on errors
  - [x] Swarm of bee
  - [x] Virtual actors
- - [ ] Microsoft DI support 
+ - [x] Microsoft DI support 
  - [ ] Store\Restore state from external storage
  - [ ] Bee life time (auto die)
  
