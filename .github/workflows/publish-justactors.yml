@@ -1,4 +1,4 @@
-name: publish JustActors
+name: publish to nuget
 on:
   push:
     branches:
@@ -9,18 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      # - name: Setup dotnet
-      #   uses: actions/setup-dotnet@v1
-      #   with:
-      #     dotnet-version: 3.1.200
-
-      # Publish
-      - name: publish on version change
-        id: publish_nuget
+      - name: publish JustActors on version change
+        id: publish_nuget_main
         uses: rohith/publish-nuget@v2
         with:
           # Filepath of the project to be packaged, relative to root of repository
           PROJECT_FILE_PATH: JustActors/JustActors.csproj
+          VERSION_REGEX: ^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$ 
+          NUGET_KEY: ${{secrets.NUGET_KEY}}
+          
+          
+      - name: publish JustActors.DependencyInjection on version change
+        id: publish_nuget_di_ext
+        uses: rohith/publish-nuget@v2
+        with:
+          PROJECT_FILE_PATH: JustActors.Microsoft.DependencyInjection/JustActors.Microsoft.DependencyInjection.csproj
           VERSION_REGEX: ^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$ 
           NUGET_KEY: ${{secrets.NUGET_KEY}}
