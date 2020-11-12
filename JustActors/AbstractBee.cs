@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using Microsoft.VisualBasic;
 
 namespace JustActors
 {
@@ -34,16 +33,13 @@ namespace JustActors
 
         protected abstract Task HandleMessage(T msg);
         protected abstract Task<HandleResult> HandleError(BeeMessage<T> msg, Exception ex);
-
-
-
+        
         public void Post(T message)
         {
             var msg = new BeeMessage<T>(message, 0);
             _mailbox.Post(msg);
         }
         
-
         [Obsolete("use this only in tests")]
         public async Task WaitEmptyMailBox()
         {
