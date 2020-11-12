@@ -1,4 +1,4 @@
-name: publish to nuget
+name: publish JustActors
 on:
   push:
     branches:
