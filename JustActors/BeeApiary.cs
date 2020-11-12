@@ -21,13 +21,7 @@ namespace JustActors
 
         public T GetBee<T>(string id) where T : IBee
         {
-            if (_state.TryGetValue((typeof(T), id), out var bee))
-                return (T)bee;
-            
-            var newBee = _beeResolver.Resolve<T>();
-            RegisterBee(id, newBee);
-
-            return newBee;
+            return (T)_state.GetOrAdd((typeof(T), id), _ => _beeResolver.Resolve<T>());
         }
     }
 }
