@@ -1,4 +1,4 @@
-name: publish to nuget
+name: publish JustActors.Microsoft.DependencyInjection
 on:
   push:
     branches:
