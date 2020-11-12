@@ -1,3 +1,7 @@
+![GitHub last commit](https://img.shields.io/github/last-commit/BashkaMen/justactor)
+![Nuget](https://img.shields.io/nuget/v/justactors)
+![Run tests](https://github.com/BashkaMen/justactor/workflows/Run%20tests/badge.svg)
+
 **Терминология**
 
  - **Bee** <--> **Actor**
@@ -51,13 +55,9 @@
          }
      }
 
-     protected override Task HandleError(BeeMessage<ILoggerMessage> msg, Exception ex)
+     protected override Task<HandleResult> HandleError(BeeMessage<ILoggerMessage> msg, Exception ex)
      {
-         if (msg.Attemp > 3) return Task.CompletedTask;
-
-         Post(msg.Message); // retry
-
-         return Task.CompletedTask;
+         return msg.Attemp > 3 ? HandleResult.OkTask() : HandleResult.RetryTask();
      }
  }
  ```
@@ -66,5 +66,5 @@
 
 
 
-Больше примеров можно посмотреть [здесь](https://gitlab.com/BashkaMen/justactor/-/blob/master/JustActors.Tests/Actors)
-и примеры использования [здесь]("https://gitlab.com/BashkaMen/justactor/-/blob/master/JustActors.Tests/BeeTests.cs")
+Больше примеров можно посмотреть [здесь](https://github.com/BashkaMen/justactor/tree/master/JustActors.Tests/Actors)
+и примеры использования [здесь](https://github.com/BashkaMen/justactor/blob/master/JustActors.Tests/BeeTests.cs)

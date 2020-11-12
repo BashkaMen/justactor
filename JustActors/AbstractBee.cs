@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using Microsoft.VisualBasic;
 
 namespace JustActors
 {
@@ -33,16 +32,14 @@ namespace JustActors
         }
 
         protected abstract Task HandleMessage(T msg);
-        protected abstract Task HandleError(BeeMessage<T> msg, Exception ex);
-
-
-
+        protected abstract Task<HandleResult> HandleError(BeeMessage<T> msg, Exception ex);
+        
         public void Post(T message)
         {
             var msg = new BeeMessage<T>(message, 0);
             _mailbox.Post(msg);
         }
-
+        
         [Obsolete("use this only in tests")]
         public async Task WaitEmptyMailBox()
         {
@@ -61,7 +58,21 @@ namespace JustActors
             catch (Exception e)
             {
                 msg.OnError(e);
-                await HandleError(msg, e);
+                var result = await HandleError(msg, e);
+
+                switch (result)
+                {
+                    case OkHandleResult x: break;
+                    case NeedRetry x:
+                        _mailbox.Post(msg);
+                        break;
+                    case NeedRetryWithDelay x:
+                        var _ = Task.Delay(x.Delay).ContinueWith(s => _mailbox.Post(msg));
+                        break;
+                    
+                    default: throw new NotImplementedException("Not implemented handler for result");
+                }
+
             }
         }
 
