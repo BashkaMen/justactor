@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>1.1.1</PackageVersion>
+        <Title>JustActors.Microsoft.DependencyInjection</Title>
+        <PackageProjectUrl>https://github.com/BashkaMen/justactor</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/BashkaMen/justactor</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageIconUrl>https://raw.githubusercontent.com/BashkaMen/justactor/master/Assets/logo.png</PackageIconUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="JustActors" Version="1.1.1" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.10" />
+    </ItemGroup>
+
+</Project>
