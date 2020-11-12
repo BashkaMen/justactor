@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using JustActors.Tests.Actors;
 using Xunit;
@@ -7,47 +9,41 @@ namespace JustActors.Tests
 {
     public class BeeTests
     {
-        private readonly LoggerBee _logger;
-        private readonly IncrementBee _incrementor;
-        private readonly SummatorBee _summator;
-
-        public BeeTests()
-        {
-            _logger = new LoggerBee();
-            _incrementor = new IncrementBee();
-            _summator = new SummatorBee();
-        }
-
         [Fact]
         public void Use_Logger()
         {
-            _logger.Post(new LogMessage("log message")); // manual
-            _logger.LogMessage("log with helper"); // helper
+            var logger = new LoggerBee();
+            logger.Post(new LogMessage("log message")); // manual
+            logger.LogMessage("log with helper"); // helper
 
             
-            _logger.Post(new FlushMessage()); // manual
-            _logger.Flush(); // helper
+            logger.Post(new FlushMessage()); // manual
+            logger.Flush(); // helper
         }
 
 
         [Fact]
         public async Task Use_Incrementor()
         {
+            var incrementor = new IncrementBee();
+            
             var count = 1_000_000;
             for (var i = 0; i < count; i++)
             {
-                _incrementor.Post(Unit.Value);
+                incrementor.Post(Unit.Value);
             }
             
-            await _incrementor.WaitEmptyMailBox();
-            Assert.Equal(count, _incrementor.GetState());
+            await incrementor.WaitEmptyMailBox();
+            Assert.Equal(count, incrementor.GetState());
         }
         
         
         [Fact]
         public async Task Use_Summator()
         {
-            var sum = await _summator.Sum(5, 5);
+            var summator = new SummatorBee();
+            
+            var sum = await summator.Sum(5, 5);
 
             Assert.Equal(10, sum);
         }
@@ -59,5 +55,26 @@ namespace JustActors.Tests
 
             await Task.Delay(10_000);
         }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(500)]
+        public async Task Use_RetryBee(int? delay)
+        {
+            var retryBee = delay.HasValue ? new RetryBee(TimeSpan.FromMilliseconds(delay.Value)) : new RetryBee();
+
+            var watch = Stopwatch.StartNew();
+            retryBee.Post(Unit.Value);
+
+            await retryBee.WaitEmptyMailBox();
+            var elapsed = watch.Elapsed;
+
+
+            if (delay.HasValue)
+                Assert.True(elapsed >= TimeSpan.FromMilliseconds(delay.Value * 2));
+            
+            Assert.Equal(3, retryBee.GetState());
+        }
+
     }
 }

@@ -10,6 +10,8 @@ namespace JustActors
     {
         private readonly BufferBlock<BeeMessage<T>> _mailbox;
 
+        protected bool IsBusy { get; private set; }
+
         protected AbstractBee()
         {
             _mailbox = new BufferBlock<BeeMessage<T>>();
@@ -37,13 +39,14 @@ namespace JustActors
         public void Post(T message)
         {
             var msg = new BeeMessage<T>(message, 0);
+            IsBusy = true;
             _mailbox.Post(msg);
         }
         
         [Obsolete("use this only in tests")]
         public async Task WaitEmptyMailBox()
         {
-            while (_mailbox.Count != 0)
+            while (IsBusy)
             {
                 await Task.Delay(1);
             }
@@ -54,6 +57,7 @@ namespace JustActors
             try
             {
                 await HandleMessage(msg.Message);
+                IsBusy = _mailbox.Count > 0;
             }
             catch (Exception e)
             {
@@ -62,7 +66,9 @@ namespace JustActors
 
                 switch (result)
                 {
-                    case OkHandleResult x: break;
+                    case OkHandleResult x:
+                        IsBusy = _mailbox.Count > 0;
+                        break;
                     case NeedRetry x:
                         _mailbox.Post(msg);
                         break;
