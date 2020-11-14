@@ -6,7 +6,7 @@
         <Title>JustActors</Title>
         <Authors>BashkaMen</Authors>
         <Description>Actor model implementation</Description>
-        <PackageProjectUrl>https://gitlab.com/BashkaMen/justactor</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/BashkaMen/justactor</PackageProjectUrl>
         <PackageIconUrl>https://raw.githubusercontent.com/BashkaMen/justactor/master/Assets/logo.png</PackageIconUrl>
         <RepositoryUrl>https://github.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
