@@ -11,7 +11,7 @@
         <RepositoryUrl>https://github.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>actor</PackageTags>
-        <PackageVersion>1.1.1</PackageVersion>
+        <PackageVersion>1.1.2</PackageVersion>
         <PackageReleaseNotes>New ErrorHandler strategy</PackageReleaseNotes>
     </PropertyGroup>
 
