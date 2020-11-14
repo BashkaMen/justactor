@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.1.1</PackageVersion>
+        <PackageVersion>1.1.2</PackageVersion>
         <Title>JustActors.Microsoft.DependencyInjection</Title>
         <PackageProjectUrl>https://github.com/BashkaMen/justactor</PackageProjectUrl>
         <RepositoryUrl>https://github.com/BashkaMen/justactor</RepositoryUrl>
