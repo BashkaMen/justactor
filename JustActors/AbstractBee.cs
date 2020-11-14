@@ -9,7 +9,6 @@ namespace JustActors
     public abstract class AbstractBee<T> : IBee
     {
         private readonly BufferBlock<BeeMessage<T>> _mailbox;
-
         protected bool IsBusy { get; private set; }
 
         protected AbstractBee()
