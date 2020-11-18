@@ -1,10 +1,26 @@
-name: publish to nuget
+name: test and publish to nuget
 on:
   push:
     branches:
-      - master # Default release branch
+      - master
 jobs:
+  
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Run tests
+      run: dotnet test --no-restore --verbosity normal
+  
   publish:
+    needs: [ run-tests ]
     name: build, pack & publish
     runs-on: ubuntu-latest
     steps:
