@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace JustActors
 {
-    public class BeeMessage<T>
+    public struct BeeMessage<T>
     {
         public T Message { get; }
         public int Attemp { get; private set; }
@@ -13,6 +13,7 @@ namespace JustActors
         {
             Message = message;
             Attemp = attemp;
+            LastError = null;
         }
         
         public void OnError(Exception ex)

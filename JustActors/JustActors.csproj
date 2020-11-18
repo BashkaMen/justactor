@@ -6,13 +6,13 @@
         <Title>JustActors</Title>
         <Authors>BashkaMen</Authors>
         <Description>Actor model implementation</Description>
-        <PackageProjectUrl>https://github.com/BashkaMen/justactor</PackageProjectUrl>
-        <PackageIconUrl>https://raw.githubusercontent.com/BashkaMen/justactor/master/Assets/logo.png</PackageIconUrl>
-        <RepositoryUrl>https://github.com/BashkaMen/justactor</RepositoryUrl>
+        <PackageProjectUrl>https://gitlab.com/BashkaMen/justactor</PackageProjectUrl>
+        <PackageIconUrl>https://gitlab.com/BashkaMen/justactor/-/raw/master/Assets/nuget-logo.png</PackageIconUrl>
+        <RepositoryUrl>https://gitlab.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>actor</PackageTags>
-        <PackageVersion>1.1.2</PackageVersion>
-        <PackageReleaseNotes>New ErrorHandler strategy</PackageReleaseNotes>
+        <PackageVersion>1.1.3</PackageVersion>
+        <PackageReleaseNotes>Use action block</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

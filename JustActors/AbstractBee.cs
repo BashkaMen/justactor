@@ -8,40 +8,44 @@ namespace JustActors
     
     public abstract class AbstractBee<T> : IBee
     {
-        private readonly BufferBlock<BeeMessage<T>> _mailbox;
+        private readonly ActionBlock<BeeMessage<T>> _mailbox;
+        
         protected bool IsBusy { get; private set; }
-
-        protected AbstractBee()
+        public AbstractBee()
         {
-            _mailbox = new BufferBlock<BeeMessage<T>>();
             
-            Task.Run(async () =>
+            _mailbox = new ActionBlock<BeeMessage<T>>(async msg =>
             {
-                while (true)
+                try
                 {
-                    try
-                    {
-                        var msg = await _mailbox.ReceiveAsync();
-                        await Handle(msg);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
+                    await Handle(msg);
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }, new ExecutionDataflowBlockOptions
+            {
+                MaxDegreeOfParallelism = 1,
+                EnsureOrdered = true,
+                MaxMessagesPerTask = 1,
+                SingleProducerConstrained = true,
             });
         }
 
         protected abstract Task HandleMessage(T msg);
         protected abstract Task<HandleResult> HandleError(BeeMessage<T> msg, Exception ex);
-        
+
+
+
         public void Post(T message)
         {
-            var msg = new BeeMessage<T>(message, 0);
             IsBusy = true;
+            var msg = new BeeMessage<T>(message, 0);
             _mailbox.Post(msg);
         }
         
+
         [Obsolete("use this only in tests")]
         public async Task WaitEmptyMailBox()
         {
@@ -53,10 +57,11 @@ namespace JustActors
         
         private async Task Handle(BeeMessage<T> msg)
         {
+            IsBusy = true;
             try
             {
                 await HandleMessage(msg.Message);
-                IsBusy = _mailbox.Count > 0;
+                IsBusy = _mailbox.InputCount > 0;
             }
             catch (Exception e)
             {
@@ -65,8 +70,8 @@ namespace JustActors
 
                 switch (result)
                 {
-                    case OkHandleResult x:
-                        IsBusy = _mailbox.Count > 0;
+                    case OkHandleResult x: 
+                        IsBusy = _mailbox.InputCount > 0;
                         break;
                     case NeedRetry x:
                         _mailbox.Post(msg);
@@ -77,7 +82,6 @@ namespace JustActors
                     
                     default: throw new NotImplementedException("Not implemented handler for result");
                 }
-
             }
         }
 
