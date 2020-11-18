@@ -48,7 +48,7 @@ namespace JustActors.Tests
             Assert.Equal(10, sum);
         }
 
-        [Fact]
+        [Fact(Skip = "only manual usage")]
         public async Task Million_Actors()
         {
             var actors = Enumerable.Range(0, 1_000_000).Select(s => new SummatorBee()).ToArray();
@@ -56,22 +56,14 @@ namespace JustActors.Tests
             await Task.Delay(10_000);
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData(500)]
-        public async Task Use_RetryBee(int? delay)
+        [Fact]
+        public async Task Use_RetryBee()
         {
-            var retryBee = delay.HasValue ? new RetryBee(TimeSpan.FromMilliseconds(delay.Value)) : new RetryBee();
+            var retryBee = new RetryBee();
 
-            var watch = Stopwatch.StartNew();
             retryBee.Post(Unit.Value);
 
             await retryBee.WaitEmptyMailBox();
-            var elapsed = watch.Elapsed;
-
-
-            if (delay.HasValue)
-                Assert.True(elapsed >= TimeSpan.FromMilliseconds(delay.Value * 2));
             
             Assert.Equal(3, retryBee.GetState());
         }

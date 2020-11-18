@@ -73,11 +73,18 @@ namespace JustActors
                     case OkHandleResult x: 
                         IsBusy = _mailbox.InputCount > 0;
                         break;
+                    
                     case NeedRetry x:
                         _mailbox.Post(msg);
                         break;
+                    
                     case NeedRetryWithDelay x:
                         var _ = Task.Delay(x.Delay).ContinueWith(s => _mailbox.Post(msg));
+                        break;
+                    
+                    case NeedRetryWithActorPause x:
+                        await Task.Delay(x.Delay);
+                        _mailbox.Post(msg);
                         break;
                     
                     default: throw new NotImplementedException("Not implemented handler for result");

@@ -11,8 +11,11 @@
         <RepositoryUrl>https://gitlab.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>actor</PackageTags>
-        <PackageVersion>1.1.3</PackageVersion>
-        <PackageReleaseNotes>Use action block</PackageReleaseNotes>
+        <PackageVersion>1.1.4</PackageVersion>
+        <PackageReleaseNotes>
+            - Use action block
+            - Added new retry stategy
+        </PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
