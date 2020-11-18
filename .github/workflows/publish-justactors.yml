@@ -20,6 +20,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
   
   publish:
+    needs: [ run-tests ]
     name: build, pack & publish
     runs-on: ubuntu-latest
     steps:
