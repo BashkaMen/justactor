@@ -42,3 +42,4 @@ jobs:
           PROJECT_FILE_PATH: JustActors.Microsoft.DependencyInjection/JustActors.Microsoft.DependencyInjection.csproj
           VERSION_REGEX: ^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$ 
           NUGET_KEY: ${{secrets.NUGET_KEY}}
+          TAG_COMMIT: false
