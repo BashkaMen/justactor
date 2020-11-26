@@ -11,10 +11,10 @@
         <RepositoryUrl>https://gitlab.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>actor</PackageTags>
-        <PackageVersion>1.1.4</PackageVersion>
+        <PackageVersion>1.1.5</PackageVersion>
         <PackageReleaseNotes>
-            - Use action block
-            - Added new retry stategy
+            - Return back Buffered block
+            - Added protected ClearQueue method
         </PackageReleaseNotes>
     </PropertyGroup>
 

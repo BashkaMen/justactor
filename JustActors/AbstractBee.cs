@@ -8,29 +8,30 @@ namespace JustActors
     
     public abstract class AbstractBee<T> : IBee
     {
-        private readonly ActionBlock<BeeMessage<T>> _mailbox;
-        
+        private readonly BufferBlock<BeeMessage<T>> _mailbox;
+        private readonly Task<Task> _rootTask;
+
         protected bool IsBusy { get; private set; }
         public AbstractBee()
         {
-            
-            _mailbox = new ActionBlock<BeeMessage<T>>(async msg =>
+            _mailbox = new BufferBlock<BeeMessage<T>>();
+
+            _rootTask = Task.Factory.StartNew(async () =>
             {
-                try
+                while (true)
                 {
-                    await Handle(msg);
+                    var msg = await _mailbox.ReceiveAsync();
+                    
+                    try
+                    {
+                        await Handle(msg);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }, new ExecutionDataflowBlockOptions
-            {
-                MaxDegreeOfParallelism = 1,
-                EnsureOrdered = true,
-                MaxMessagesPerTask = 1,
-                SingleProducerConstrained = true,
-            });
+            }, TaskCreationOptions.LongRunning);
         }
 
         protected abstract Task HandleMessage(T msg);
@@ -44,6 +45,8 @@ namespace JustActors
             var msg = new BeeMessage<T>(message, 0);
             _mailbox.Post(msg);
         }
+
+        protected void ClearQueue() => _mailbox.TryReceiveAll(out var _);
         
 
         [Obsolete("use this only in tests")]
@@ -61,7 +64,7 @@ namespace JustActors
             try
             {
                 await HandleMessage(msg.Message);
-                IsBusy = _mailbox.InputCount > 0;
+                IsBusy = _mailbox.Count > 0;
             }
             catch (Exception e)
             {
@@ -71,7 +74,7 @@ namespace JustActors
                 switch (result)
                 {
                     case OkHandleResult x: 
-                        IsBusy = _mailbox.InputCount > 0;
+                        IsBusy = _mailbox.Count > 0;
                         break;
                     
                     case NeedRetry x:
