@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
@@ -8,22 +9,29 @@ namespace JustActors
     
     public abstract class AbstractBee<T> : IBee
     {
+        private readonly List<BeeMessage<T>> _delayedMessages;
         private readonly BufferBlock<BeeMessage<T>> _mailbox;
         private readonly Task<Task> _rootTask;
 
-        protected bool IsBusy { get; private set; }
+        private bool _inProcess;
+        
+        public bool IsBusy => _inProcess || _delayedMessages.Count + _mailbox.Count > 0;
+        
         public AbstractBee()
         {
             _mailbox = new BufferBlock<BeeMessage<T>>();
+            _delayedMessages = new List<BeeMessage<T>>();
 
             _rootTask = Task.Factory.StartNew(async () =>
             {
                 while (true)
                 {
+                    _inProcess = false;
                     var msg = await _mailbox.ReceiveAsync();
-                    
+
                     try
                     {
+                        _inProcess = true;
                         await Handle(msg);
                     }
                     catch (Exception e)
@@ -41,7 +49,6 @@ namespace JustActors
 
         public void Post(T message)
         {
-            IsBusy = true;
             var msg = new BeeMessage<T>(message, 0);
             _mailbox.Post(msg);
         }
@@ -54,17 +61,15 @@ namespace JustActors
         {
             while (IsBusy)
             {
-                await Task.Delay(1);
+                await Task.Delay(30);
             }
         }
         
         private async Task Handle(BeeMessage<T> msg)
         {
-            IsBusy = true;
             try
             {
                 await HandleMessage(msg.Message);
-                IsBusy = _mailbox.Count > 0;
             }
             catch (Exception e)
             {
@@ -74,7 +79,6 @@ namespace JustActors
                 switch (result)
                 {
                     case OkHandleResult x: 
-                        IsBusy = _mailbox.Count > 0;
                         break;
                     
                     case NeedRetry x:
@@ -82,7 +86,13 @@ namespace JustActors
                         break;
                     
                     case NeedRetryWithDelay x:
-                        var _ = Task.Delay(x.Delay).ContinueWith(s => _mailbox.Post(msg));
+                        _delayedMessages.Add(msg);
+                        
+                        var _ = Task.Delay(x.Delay).ContinueWith(s =>
+                        {
+                            _mailbox.Post(msg);
+                            _delayedMessages.Remove(msg);
+                        });
                         break;
                     
                     case NeedRetryWithActorPause x:

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace JustActors
 {
-    public struct BeeMessage<T>
+    public class BeeMessage<T>
     {
         public T Message { get; }
         public int Attemp { get; private set; }
