@@ -1,4 +1,5 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/BashkaMen/justactor)
+![GitHub pull request](https://img.shields.io/github/issues-pr-closed/BashkaMen/justactor?color=4cc61e)
 ![Nuget](https://img.shields.io/nuget/v/justactors)
 ![Run tests](https://github.com/BashkaMen/justactor/workflows/Run%20tests/badge.svg)
 
