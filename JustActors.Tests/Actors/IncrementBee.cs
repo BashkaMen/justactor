@@ -18,9 +18,30 @@ namespace JustActors.Tests.Actors
 
         protected override Task<HandleResult> HandleError(BeeMessage<Unit> msg, Exception ex)
         {
-            Console.WriteLine(ex);
-            
             return HandleResult.OkTask();
+        }
+    }
+
+    public class SlowlyCounter : AbstractBee<Unit>
+    {
+        private int _state = 0;
+
+        public int GetState() => _state;
+
+        public void Increment()
+        {
+            Post(Unit.Value);
+        }
+        
+        protected override async Task HandleMessage(Unit msg)
+        {
+            await Task.Delay(50);
+            _state++;
+        }
+
+        protected override Task<HandleResult> HandleError(BeeMessage<Unit> msg, Exception ex)
+        {
+            throw new NotImplementedException();
         }
     }
 }

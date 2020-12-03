@@ -68,5 +68,20 @@ namespace JustActors.Tests
             Assert.Equal(3, retryBee.GetState());
         }
 
+
+        [Fact]
+        public async Task WaitEmptyMailBox()
+        {
+            var counter = new SlowlyCounter();
+
+            for (int i = 0; i < 100; i++)
+            {
+                counter.Increment();
+            }
+
+            await counter.WaitEmptyMailBox();
+            Assert.Equal(100, counter.GetState());
+
+        }
     }
 }

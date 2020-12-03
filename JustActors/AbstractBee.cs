@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
@@ -9,33 +9,31 @@ namespace JustActors
     
     public abstract class AbstractBee<T> : IBee
     {
-        private readonly List<BeeMessage<T>> _delayedMessages;
         private readonly BufferBlock<BeeMessage<T>> _mailbox;
         private readonly Task<Task> _rootTask;
 
-        private bool _inProcess;
+
+        private int _messageCounter;
+        public bool IsBusy => _messageCounter != 0;
         
-        public bool IsBusy => _inProcess || _delayedMessages.Count + _mailbox.Count > 0;
         
         public AbstractBee()
         {
             _mailbox = new BufferBlock<BeeMessage<T>>();
-            _delayedMessages = new List<BeeMessage<T>>();
-
+            
             _rootTask = Task.Factory.StartNew(async () =>
             {
                 while (true)
                 {
-                    _inProcess = false;
                     var msg = await _mailbox.ReceiveAsync();
 
                     try
                     {
-                        _inProcess = true;
                         await Handle(msg);
                     }
                     catch (Exception e)
                     {
+                        Interlocked.Decrement(ref _messageCounter);
                         Console.WriteLine(e);
                     }
                 }
@@ -50,6 +48,7 @@ namespace JustActors
         public void Post(T message)
         {
             var msg = new BeeMessage<T>(message, 0);
+            Interlocked.Increment(ref _messageCounter);
             _mailbox.Post(msg);
         }
 
@@ -61,7 +60,7 @@ namespace JustActors
         {
             while (IsBusy)
             {
-                await Task.Delay(30);
+                await Task.Delay(10);
             }
         }
         
@@ -70,6 +69,7 @@ namespace JustActors
             try
             {
                 await HandleMessage(msg.Message);
+                Interlocked.Decrement(ref _messageCounter);
             }
             catch (Exception e)
             {
@@ -79,6 +79,7 @@ namespace JustActors
                 switch (result)
                 {
                     case OkHandleResult x: 
+                        Interlocked.Decrement(ref _messageCounter);
                         break;
                     
                     case NeedRetry x:
@@ -86,13 +87,7 @@ namespace JustActors
                         break;
                     
                     case NeedRetryWithDelay x:
-                        _delayedMessages.Add(msg);
-                        
-                        var _ = Task.Delay(x.Delay).ContinueWith(s =>
-                        {
-                            _mailbox.Post(msg);
-                            _delayedMessages.Remove(msg);
-                        });
+                        var _ = Task.Delay(x.Delay).ContinueWith(s =>_mailbox.Post(msg));
                         break;
                     
                     case NeedRetryWithActorPause x:
