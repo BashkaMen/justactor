@@ -20,6 +20,9 @@ namespace JustActors.Tests.Actors
         {
             return HandleResult.OkTask();
         }
+
+        public void Increment() => Post(Unit.Value);
+        public Task WaitEndWork() => WaitEmptyWindow();
     }
 
     public class SlowlyCounter : AbstractBee<Unit>
@@ -32,6 +35,8 @@ namespace JustActors.Tests.Actors
         {
             Post(Unit.Value);
         }
+
+        public Task WaitEndWork() => WaitEmptyWindow();
         
         protected override async Task HandleMessage(Unit msg)
         {
@@ -41,7 +46,7 @@ namespace JustActors.Tests.Actors
 
         protected override Task<HandleResult> HandleError(BeeMessage<Unit> msg, Exception ex)
         {
-            throw new NotImplementedException();
+            return HandleResult.OkTask();
         }
     }
 }

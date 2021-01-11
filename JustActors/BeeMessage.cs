@@ -36,9 +36,6 @@ namespace JustActors
         public static Task<HandleResult> RetryTask(TimeSpan delay) => Task.FromResult(Retry(delay));
         
         
-        public static HandleResult RetryWithActorPause(TimeSpan delay) => new NeedRetryWithActorPause(delay);
-        public static Task<HandleResult> RetryWithActorPauseTask(TimeSpan delay) => Task.FromResult(RetryWithActorPause(delay));
-        
         protected HandleResult(){}
     }
 
@@ -67,14 +64,4 @@ namespace JustActors
             Delay = delay;
         }
     }
-
-    internal class NeedRetryWithActorPause : HandleResult
-    {
-        public TimeSpan Delay { get; }
-
-        public NeedRetryWithActorPause(TimeSpan delay)
-        {
-            Delay = delay;
-        }
-    } 
 }

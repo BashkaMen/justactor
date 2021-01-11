@@ -13,12 +13,9 @@ namespace JustActors.Tests
         public void Use_Logger()
         {
             var logger = new LoggerBee();
-            logger.Post(new LogMessage("log message")); // manual
-            logger.LogMessage("log with helper"); // helper
-
-            
-            logger.Post(new FlushMessage()); // manual
-            logger.Flush(); // helper
+            logger.LogMessage("log message"); 
+            logger.LogMessage("log with helper"); 
+            logger.Flush(); 
         }
 
 
@@ -30,10 +27,10 @@ namespace JustActors.Tests
             var count = 1_000_000;
             for (var i = 0; i < count; i++)
             {
-                incrementor.Post(Unit.Value);
+                incrementor.Increment();
             }
             
-            await incrementor.WaitEmptyMailBox();
+            await incrementor.WaitEndWork();
             Assert.Equal(count, incrementor.GetState());
         }
         
@@ -61,9 +58,9 @@ namespace JustActors.Tests
         {
             var retryBee = new RetryBee();
 
-            retryBee.Post(Unit.Value);
+            retryBee.Run();
 
-            await retryBee.WaitEmptyMailBox();
+            await retryBee.WaitEndWork();
             
             Assert.Equal(3, retryBee.GetState());
         }
@@ -79,7 +76,7 @@ namespace JustActors.Tests
                 counter.Increment();
             }
 
-            await counter.WaitEmptyMailBox();
+            await counter.WaitEndWork();
             Assert.Equal(100, counter.GetState());
 
         }
