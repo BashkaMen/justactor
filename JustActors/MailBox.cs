@@ -20,7 +20,7 @@ namespace JustActors
 
         public Task<T> ReceiveAsync() => _mailbox.ReceiveAsync();
 
-        public Task<TResponse> PostAndReceiveAsync<TResponse>(Func<ReplyChannel<TResponse>, T> msgFabric)
+        public Task<TResponse> PostAndReplyAsync<TResponse>(Func<ReplyChannel<TResponse>, T> msgFabric)
         {
             var rc = new ReplyChannel<TResponse>();
             var msg = msgFabric(rc);
@@ -30,12 +30,12 @@ namespace JustActors
             return rc.GetReply;
         }
 
-        public async Task<TResponse?> PostAndReceiveAsync<TResponse>(Func<ReplyChannel<TResponse>, T> msgFabric, TimeSpan timeout)
+        public async Task<TResponse?> PostAndReplyAsync<TResponse>(Func<ReplyChannel<TResponse>, T> msgFabric, TimeSpan timeout)
         {
-            var postTask = PostAndReceiveAsync(msgFabric);
+            var postTask = PostAndReplyAsync(msgFabric);
             var delayTask = Task.Delay(timeout);
 
-            var resTask = await Task.WhenAny(delayTask);
+            var resTask = await Task.WhenAny(postTask, delayTask);
 
             return resTask == delayTask ? default : postTask.Result;
         }

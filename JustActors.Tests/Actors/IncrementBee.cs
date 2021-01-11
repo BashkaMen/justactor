@@ -8,6 +8,8 @@ namespace JustActors.Tests.Actors
         private int _state = 0;
 
         public int GetState() => _state;
+        public void Increment() => Post(Unit.Value);
+        public Task WaitEndWork() => WaitEmptyWindow();
 
         protected override Task HandleMessage(Unit msg)
         {
@@ -20,9 +22,6 @@ namespace JustActors.Tests.Actors
         {
             return HandleResult.OkTask();
         }
-
-        public void Increment() => Post(Unit.Value);
-        public Task WaitEndWork() => WaitEmptyWindow();
     }
 
     public class SlowlyCounter : AbstractBee<Unit>

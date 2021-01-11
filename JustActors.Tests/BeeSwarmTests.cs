@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 using JustActors.Tests.Actors;
 using Xunit;
 using Xunit.Abstractions;
@@ -28,16 +29,19 @@ namespace JustActors.Tests
         {
             var seconds = 3;
             var bag = new ConcurrentBag<Task<int>>();
-            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
             while (!cts.IsCancellationRequested)
             {
                 bag.Add(_slowlyBee.GetRandomNumber());                
             }
 
-            var completed = bag.Where(s => s.IsCompleted).ToArray();
-            
-            _output.WriteLine($"RPS: {completed.Length / seconds}");
+            var completed = bag.Where(s => s.IsCompleted && s.Result > 0).ToArray();
+
+            var rps = completed.Length / seconds;
+            _output.WriteLine($"RPS: {rps}");
+
+            rps.Should().BeGreaterThan(2);
         }
         
         

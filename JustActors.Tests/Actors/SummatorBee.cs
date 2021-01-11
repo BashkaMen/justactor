@@ -18,14 +18,7 @@ namespace JustActors.Tests.Actors
     
     public class SummatorBee : AbstractBee<SummatorMessage>
     {
-        public Task<int> Sum(params int[] args)
-        {
-            var rc = new ReplyChannel<int>();
-            var msg = new SummatorMessage(args, rc);
-            Post(msg);
-            
-            return rc.GetReply;
-        }
+        public Task<int> Sum(params int[] args) => PostAndReply<int>(rc => new SummatorMessage(args, rc));
         
         
         protected override Task HandleMessage(SummatorMessage msg)

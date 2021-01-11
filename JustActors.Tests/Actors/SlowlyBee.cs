@@ -10,13 +10,7 @@ namespace JustActors.Tests.Actors
         private readonly Random _random = new Random();
 
 
-        public Task<int> GetRandomNumber()
-        {
-            var rc = new ReplyChannel<int>();
-            Post(rc);
-
-            return rc.GetReply;
-        }
+        public Task<int> GetRandomNumber() => PostAndReply<int>(rc => rc);
         
         
         protected override async Task HandleMessage(ReplyChannel<int> msg)

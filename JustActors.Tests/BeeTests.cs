@@ -2,13 +2,23 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using JustActors.Tests.Actors;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace JustActors.Tests
 {
     public class BeeTests
     {
+        private readonly ITestOutputHelper _outputHelper;
+
+        public BeeTests(ITestOutputHelper outputHelper)
+        {
+            _outputHelper = outputHelper;
+        }
+        
+        
         [Fact]
         public void Use_Logger()
         {
@@ -76,9 +86,36 @@ namespace JustActors.Tests
                 counter.Increment();
             }
 
-            await counter.WaitEndWork();
-            Assert.Equal(100, counter.GetState());
+            var waiter = Enumerable.Range(0, 3).Select(s => counter.WaitEndWork()).ToArray();
+            
+            await Task.WhenAll(waiter);
 
+            waiter.All(s => s.IsCompletedSuccessfully).Should().Be(true);
+            Assert.Equal(100, counter.GetState());
+        }
+
+        [Fact]
+        public async Task Timeout()
+        {
+            var bee = new TimeoutBee();
+
+            var res = await bee.Run();
+            res.Should().Be(Unit.Value);
+
+            var res2 = await bee.Run(TimeSpan.FromMilliseconds(300));
+            res2.Should().Be(res);
+        }
+
+        [Fact]
+        public async Task Calc_Message_LifeTime()
+        {
+            var bee = new SummatorBee();
+            
+            var sw = Stopwatch.StartNew();
+            var res = await bee.Sum(2, 2);
+            
+            var elapsed = sw.Elapsed;
+            _outputHelper.WriteLine($"Elapsed: {elapsed}");
         }
     }
 }

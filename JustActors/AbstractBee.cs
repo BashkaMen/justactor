@@ -50,9 +50,19 @@ namespace JustActors
 
         protected void Post(T message)
         {
-            var msg = new BeeMessage<T>(message, 0);
+            var msg = new BeeMessage<T>(message);
             _mailbox.Post(msg);
             OnMessageEnter();
+        }
+
+        protected Task<TResponse> PostAndReply<TResponse>(Func<ReplyChannel<TResponse>, T> msgFabric)
+        {
+            return _mailbox.PostAndReplyAsync<TResponse>(rc => new BeeMessage<T>(msgFabric(rc)));
+        }
+        
+        protected Task<TResponse?> PostAndReply<TResponse>(Func<ReplyChannel<TResponse>, T> msgFabric, TimeSpan timeout)
+        {
+            return _mailbox.PostAndReplyAsync<TResponse>(rc => new BeeMessage<T>(msgFabric(rc)), timeout);
         }
 
         protected void ClearQueue() => _mailbox.Clear();
@@ -60,6 +70,8 @@ namespace JustActors
 
         protected Task WaitEmptyWindow()
         {
+            if (!IsBusy) return Task.CompletedTask;
+            
             var tsc = new TaskCompletionSource<bool>();
             _waiters.Add(tsc);
 

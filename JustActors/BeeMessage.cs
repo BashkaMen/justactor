@@ -7,12 +7,14 @@ namespace JustActors
     {
         public T Message { get; }
         public int Attemp { get; private set; }
+        public DateTime EnterTime { get; }
         public Exception LastError { get; private set; }
         
-        public BeeMessage(T message, int attemp)
+        public BeeMessage(T message)
         {
             Message = message;
-            Attemp = attemp;
+            Attemp = 0;
+            EnterTime = DateTime.Now;
             LastError = null;
         }
         
