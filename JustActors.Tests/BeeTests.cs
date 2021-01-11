@@ -2,23 +2,30 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using JustActors.Tests.Actors;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace JustActors.Tests
 {
     public class BeeTests
     {
+        private readonly ITestOutputHelper _outputHelper;
+
+        public BeeTests(ITestOutputHelper outputHelper)
+        {
+            _outputHelper = outputHelper;
+        }
+        
+        
         [Fact]
         public void Use_Logger()
         {
             var logger = new LoggerBee();
-            logger.Post(new LogMessage("log message")); // manual
-            logger.LogMessage("log with helper"); // helper
-
-            
-            logger.Post(new FlushMessage()); // manual
-            logger.Flush(); // helper
+            logger.LogMessage("log message"); 
+            logger.LogMessage("log with helper"); 
+            logger.Flush(); 
         }
 
 
@@ -30,10 +37,10 @@ namespace JustActors.Tests
             var count = 1_000_000;
             for (var i = 0; i < count; i++)
             {
-                incrementor.Post(Unit.Value);
+                incrementor.Increment();
             }
             
-            await incrementor.WaitEmptyMailBox();
+            await incrementor.WaitEndWork();
             Assert.Equal(count, incrementor.GetState());
         }
         
@@ -61,9 +68,9 @@ namespace JustActors.Tests
         {
             var retryBee = new RetryBee();
 
-            retryBee.Post(Unit.Value);
+            retryBee.Run();
 
-            await retryBee.WaitEmptyMailBox();
+            await retryBee.WaitEndWork();
             
             Assert.Equal(3, retryBee.GetState());
         }
@@ -79,9 +86,36 @@ namespace JustActors.Tests
                 counter.Increment();
             }
 
-            await counter.WaitEmptyMailBox();
-            Assert.Equal(100, counter.GetState());
+            var waiter = Enumerable.Range(0, 3).Select(s => counter.WaitEndWork()).ToArray();
+            
+            await Task.WhenAll(waiter);
 
+            waiter.All(s => s.IsCompletedSuccessfully).Should().Be(true);
+            Assert.Equal(100, counter.GetState());
+        }
+
+        [Fact]
+        public async Task Timeout()
+        {
+            var bee = new TimeoutBee();
+
+            var res = await bee.Run();
+            res.Should().Be(Unit.Value);
+
+            var res2 = await bee.Run(TimeSpan.FromMilliseconds(300));
+            res2.Should().Be(res);
+        }
+
+        [Fact]
+        public async Task Calc_Message_LifeTime()
+        {
+            var bee = new SummatorBee();
+            
+            var sw = Stopwatch.StartNew();
+            var res = await bee.Sum(2, 2);
+            
+            var elapsed = sw.Elapsed;
+            _outputHelper.WriteLine($"Elapsed: {elapsed}");
         }
     }
 }

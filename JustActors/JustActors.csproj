@@ -11,10 +11,14 @@
         <RepositoryUrl>https://gitlab.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>actor</PackageTags>
-        <PackageVersion>1.1.7</PackageVersion>
+        <PackageVersion>2.0.0</PackageVersion>
         <PackageReleaseNotes>
-            - Fix wait empty mail box
+            - Added mailbox as separate class
+            - Use MailBox in actors
+            - Improve wait end work
         </PackageReleaseNotes>
+        <Nullable>enable</Nullable>
+        <LangVersion>9</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

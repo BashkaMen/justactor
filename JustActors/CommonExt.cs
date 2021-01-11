@@ -21,7 +21,13 @@ namespace JustActors
             return source[_random.Next(source.Length)];
         }
 
-        public static void SwarmPost<T>(this AbstractBee<T>[] source, T message) 
-            => source.Random().Post(message);
+        
+        public static void Iter<T>(this IEnumerable<T> source, Action<T> func)
+        {
+            foreach (var item in source)
+            {
+                func(item);
+            }
+        }
     }
 }

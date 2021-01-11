@@ -30,5 +30,8 @@ namespace JustActors.Tests.Actors
         {
             return _state;
         }
+        
+        public void Run() => Post(Unit.Value);
+        public Task WaitEndWork() => WaitEmptyWindow();
     }
 }

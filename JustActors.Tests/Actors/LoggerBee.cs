@@ -26,7 +26,6 @@ namespace JustActors.Tests.Actors
         private const string Path = "log.txt";
         private readonly List<string> _log = new List<string>();
         
-        // simple helper
         public void LogMessage(string message) => Post(new LogMessage(message));
         public void Flush() => Post(new FlushMessage());
         

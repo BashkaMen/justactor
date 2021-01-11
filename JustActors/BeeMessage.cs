@@ -7,12 +7,14 @@ namespace JustActors
     {
         public T Message { get; }
         public int Attemp { get; private set; }
+        public DateTime EnterTime { get; }
         public Exception LastError { get; private set; }
         
-        public BeeMessage(T message, int attemp)
+        public BeeMessage(T message)
         {
             Message = message;
-            Attemp = attemp;
+            Attemp = 0;
+            EnterTime = DateTime.Now;
             LastError = null;
         }
         
@@ -35,9 +37,6 @@ namespace JustActors
         public static HandleResult Retry(TimeSpan delay) => new NeedRetryWithDelay(delay);
         public static Task<HandleResult> RetryTask(TimeSpan delay) => Task.FromResult(Retry(delay));
         
-        
-        public static HandleResult RetryWithActorPause(TimeSpan delay) => new NeedRetryWithActorPause(delay);
-        public static Task<HandleResult> RetryWithActorPauseTask(TimeSpan delay) => Task.FromResult(RetryWithActorPause(delay));
         
         protected HandleResult(){}
     }
@@ -67,14 +66,4 @@ namespace JustActors
             Delay = delay;
         }
     }
-
-    internal class NeedRetryWithActorPause : HandleResult
-    {
-        public TimeSpan Delay { get; }
-
-        public NeedRetryWithActorPause(TimeSpan delay)
-        {
-            Delay = delay;
-        }
-    } 
 }

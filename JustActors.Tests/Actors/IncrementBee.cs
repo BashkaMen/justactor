@@ -8,6 +8,8 @@ namespace JustActors.Tests.Actors
         private int _state = 0;
 
         public int GetState() => _state;
+        public void Increment() => Post(Unit.Value);
+        public Task WaitEndWork() => WaitEmptyWindow();
 
         protected override Task HandleMessage(Unit msg)
         {
@@ -32,6 +34,8 @@ namespace JustActors.Tests.Actors
         {
             Post(Unit.Value);
         }
+
+        public Task WaitEndWork() => WaitEmptyWindow();
         
         protected override async Task HandleMessage(Unit msg)
         {
@@ -41,7 +45,7 @@ namespace JustActors.Tests.Actors
 
         protected override Task<HandleResult> HandleError(BeeMessage<Unit> msg, Exception ex)
         {
-            throw new NotImplementedException();
+            return HandleResult.OkTask();
         }
     }
 }

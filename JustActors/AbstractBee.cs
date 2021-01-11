@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -9,17 +10,19 @@ namespace JustActors
     
     public abstract class AbstractBee<T> : IBee
     {
-        private readonly BufferBlock<BeeMessage<T>> _mailbox;
+        private readonly MailBox<BeeMessage<T>> _mailbox;
         private readonly Task<Task> _rootTask;
+        private readonly ConcurrentBag<TaskCompletionSource<bool>> _waiters;
 
 
         private int _messageCounter;
-        public bool IsBusy => _messageCounter != 0;
+        protected bool IsBusy => _messageCounter != 0;
         
         
         public AbstractBee()
         {
-            _mailbox = new BufferBlock<BeeMessage<T>>();
+            _mailbox = new MailBox<BeeMessage<T>>();
+            _waiters = new ConcurrentBag<TaskCompletionSource<bool>>();
             
             _rootTask = Task.Factory.StartNew(async () =>
             {
@@ -33,7 +36,7 @@ namespace JustActors
                     }
                     catch (Exception e)
                     {
-                        Interlocked.Decrement(ref _messageCounter);
+                        OnMessageExit();
                         Console.WriteLine(e);
                     }
                 }
@@ -45,23 +48,34 @@ namespace JustActors
 
 
 
-        public void Post(T message)
+        protected void Post(T message)
         {
-            var msg = new BeeMessage<T>(message, 0);
-            Interlocked.Increment(ref _messageCounter);
+            var msg = new BeeMessage<T>(message);
             _mailbox.Post(msg);
+            OnMessageEnter();
         }
 
-        protected void ClearQueue() => _mailbox.TryReceiveAll(out var _);
+        protected Task<TResponse> PostAndReply<TResponse>(Func<ReplyChannel<TResponse>, T> msgFabric)
+        {
+            return _mailbox.PostAndReplyAsync<TResponse>(rc => new BeeMessage<T>(msgFabric(rc)));
+        }
+        
+        protected Task<TResponse?> PostAndReply<TResponse>(Func<ReplyChannel<TResponse>, T> msgFabric, TimeSpan timeout)
+        {
+            return _mailbox.PostAndReplyAsync<TResponse>(rc => new BeeMessage<T>(msgFabric(rc)), timeout);
+        }
+
+        protected void ClearQueue() => _mailbox.Clear();
         
 
-        [Obsolete("use this only in tests")]
-        public async Task WaitEmptyMailBox()
+        protected Task WaitEmptyWindow()
         {
-            while (IsBusy)
-            {
-                await Task.Delay(10);
-            }
+            if (!IsBusy) return Task.CompletedTask;
+            
+            var tsc = new TaskCompletionSource<bool>();
+            _waiters.Add(tsc);
+
+            return tsc.Task;
         }
         
         private async Task Handle(BeeMessage<T> msg)
@@ -69,7 +83,7 @@ namespace JustActors
             try
             {
                 await HandleMessage(msg.Message);
-                Interlocked.Decrement(ref _messageCounter);
+                OnMessageExit();
             }
             catch (Exception e)
             {
@@ -78,8 +92,8 @@ namespace JustActors
 
                 switch (result)
                 {
-                    case OkHandleResult x: 
-                        Interlocked.Decrement(ref _messageCounter);
+                    case OkHandleResult x:
+                        OnMessageExit();
                         break;
                     
                     case NeedRetry x:
@@ -90,13 +104,26 @@ namespace JustActors
                         var _ = Task.Delay(x.Delay).ContinueWith(s =>_mailbox.Post(msg));
                         break;
                     
-                    case NeedRetryWithActorPause x:
-                        await Task.Delay(x.Delay);
-                        _mailbox.Post(msg);
-                        break;
                     
                     default: throw new NotImplementedException("Not implemented handler for result");
                 }
+            }
+        }
+
+        private void OnMessageEnter()
+        {
+            Interlocked.Increment(ref _messageCounter);
+        }
+
+        private void OnMessageExit()
+        {
+            Interlocked.Decrement(ref _messageCounter);
+
+            if (_messageCounter > 0) return;
+
+            while (_waiters.TryTake(out var tsc))
+            {
+                tsc.SetResult(true);
             }
         }
 
