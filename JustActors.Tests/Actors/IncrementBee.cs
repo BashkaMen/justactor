@@ -29,6 +29,7 @@ namespace JustActors.Tests.Actors
         private int _state = 0;
 
         public int GetState() => _state;
+        public new bool IsBusy => base.IsBusy;
 
         public void Increment()
         {

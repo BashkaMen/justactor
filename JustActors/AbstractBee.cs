@@ -17,6 +17,7 @@ namespace JustActors
 
         private int _messageCounter;
         protected bool IsBusy => _messageCounter != 0;
+        protected int QueueCount => _mailbox.Count;
         
         
         public AbstractBee()
