@@ -12,18 +12,16 @@ namespace JustActors
     {
         private readonly MailBox<BeeMessage<T>> _mailbox;
         private readonly Task<Task> _rootTask;
-        private readonly ConcurrentBag<TaskCompletionSource<bool>> _waiters;
 
 
         private int _messageCounter;
-        protected bool IsBusy => _messageCounter != 0;
+        protected bool IsBusy => _messageCounter > 0;
         protected int QueueCount => _mailbox.Count;
         
         
         public AbstractBee()
         {
             _mailbox = new MailBox<BeeMessage<T>>();
-            _waiters = new ConcurrentBag<TaskCompletionSource<bool>>();
             
             _rootTask = Task.Factory.StartNew(async () =>
             {
@@ -69,14 +67,12 @@ namespace JustActors
         protected void ClearQueue() => _mailbox.Clear();
         
 
-        protected Task WaitEmptyWindow()
+        protected async Task WaitEmptyWindow()
         {
-            if (!IsBusy) return Task.CompletedTask;
-            
-            var tsc = new TaskCompletionSource<bool>();
-            _waiters.Add(tsc);
-
-            return tsc.Task;
+            while (IsBusy)
+            {
+                await Task.Delay(10);
+            }
         }
         
         private async Task Handle(BeeMessage<T> msg)
@@ -119,13 +115,6 @@ namespace JustActors
         private void OnMessageExit()
         {
             Interlocked.Decrement(ref _messageCounter);
-
-            if (_messageCounter > 0) return;
-
-            while (_waiters.TryTake(out var tsc))
-            {
-                tsc.SetResult(true);
-            }
         }
 
     }

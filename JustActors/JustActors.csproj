@@ -11,9 +11,9 @@
         <RepositoryUrl>https://github.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>actor</PackageTags>
-        <PackageVersion>2.0.2</PackageVersion>
+        <PackageVersion>2.0.3</PackageVersion>
         <PackageReleaseNotes>
-            - Add protected QueueCount to actor
+            - Hot fix for wait empty window
         </PackageReleaseNotes>
         <Nullable>enable</Nullable>
         <LangVersion>9</LangVersion>
