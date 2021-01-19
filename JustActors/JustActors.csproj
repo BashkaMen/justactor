@@ -6,12 +6,12 @@
         <Title>JustActors</Title>
         <Authors>BashkaMen</Authors>
         <Description>Actor model implementation</Description>
-        <PackageProjectUrl>https://gitlab.com/BashkaMen/justactor</PackageProjectUrl>
-        <PackageIconUrl>https://gitlab.com/BashkaMen/justactor/-/raw/master/Assets/nuget-logo.png</PackageIconUrl>
-        <RepositoryUrl>https://gitlab.com/BashkaMen/justactor</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/BashkaMen/justactor</PackageProjectUrl>
+        <PackageIconUrl>https://raw.githubusercontent.com/BashkaMen/justactor/master/Assets/logo.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/BashkaMen/justactor</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>actor</PackageTags>
-        <PackageVersion>2.0.0</PackageVersion>
+        <PackageVersion>2.0.1</PackageVersion>
         <PackageReleaseNotes>
             - Added mailbox as separate class
             - Use MailBox in actors
