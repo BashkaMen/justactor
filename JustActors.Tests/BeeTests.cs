@@ -86,12 +86,14 @@ namespace JustActors.Tests
                 counter.Increment();
             }
 
+            counter.IsBusy.Should().Be(true);
+            
             var waiter = Enumerable.Range(0, 3).Select(s => counter.WaitEndWork()).ToArray();
             
             await Task.WhenAll(waiter);
 
             waiter.All(s => s.IsCompletedSuccessfully).Should().Be(true);
-            Assert.Equal(100, counter.GetState());
+            counter.GetState().Should().Be(100);
         }
 
         [Fact]

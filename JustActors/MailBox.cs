@@ -9,6 +9,7 @@ namespace JustActors
         private readonly BufferBlock<T> _mailbox;
 
         public bool IsEmpty => _mailbox.Count == 0;
+        public int Count => _mailbox.Count;
         
         public MailBox()
         {
